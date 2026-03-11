@@ -7,6 +7,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-50">
+
+    <!-- HEADER -->
     <div class="bg-blue-600 text-white p-6 shadow-lg">
         <div class="max-w-7xl mx-auto flex justify-between items-center">
             <div>
@@ -20,21 +22,25 @@
         </div>
     </div>
 
+    <!-- MAIN CONTENT -->
     <div class="max-w-7xl mx-auto p-6">
+
+        <!-- TABS -->
         <div class="border-b-2 border-gray-200 mb-6">
             <div class="flex gap-2">
                 <button onclick="switchTab('dashboard')" id="dashboardTab" class="px-6 py-3 font-medium text-blue-600 border-b-2 border-blue-600">
-                    📊 Dashboard
+                    &#128202; Dashboard
                 </button>
                 <button onclick="switchTab('transactions')" id="transactionsTab" class="px-6 py-3 font-medium text-gray-500 border-b-2 border-transparent hover:text-gray-700">
-                    📋 Transactions
+                    &#128203; Transactions
                 </button>
                 <button onclick="switchTab('report')" id="reportTab" class="px-6 py-3 font-medium text-gray-500 border-b-2 border-transparent hover:text-gray-700">
-                    📄 Daily Report
+                    &#128196; Daily Report
                 </button>
             </div>
         </div>
 
+        <!-- DASHBOARD VIEW -->
         <div id="dashboardView">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
                 <div class="bg-blue-50 border-l-4 border-blue-500 p-6 rounded-lg shadow">
@@ -54,14 +60,12 @@
                     <div class="text-red-600 text-sm mt-1">Not Accepted</div>
                 </div>
             </div>
-
             <div class="bg-white rounded-lg shadow mb-6">
                 <div class="p-4 border-b border-gray-200">
                     <h2 class="text-xl font-semibold">Transactions by Stage</h2>
                 </div>
                 <div class="p-6" id="stageBreakdown"></div>
             </div>
-
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="bg-white rounded-lg shadow">
                     <div class="p-4 border-b border-gray-200">
@@ -78,21 +82,17 @@
             </div>
         </div>
 
-        <div id="transactionsView" style="display: none;">
+        <!-- TRANSACTIONS VIEW -->
+        <div id="transactionsView" style="display:none;">
             <div class="flex gap-4 mb-6 flex-wrap">
-                <input type="text" id="searchBox" placeholder="Search..." 
+                <input type="text" id="searchBox" placeholder="Search..."
                     class="flex-1 min-w-64 px-4 py-2 border border-gray-300 rounded-lg">
                 <select id="filterStage" class="px-4 py-2 border border-gray-300 rounded-lg">
                     <option value="ALL">All Stages</option>
                 </select>
-                <button onclick="showAddForm()" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">
-                    + New Request
-                </button>
-                <button onclick="exportData()" class="bg-gray-600 text-white px-6 py-2 rounded-lg hover:bg-gray-700">
-                    📥 Export
-                </button>
+                <button onclick="showAddForm()" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">+ New Request</button>
+                <button onclick="exportData()" class="bg-gray-600 text-white px-6 py-2 rounded-lg hover:bg-gray-700">&#128229; Export</button>
             </div>
-
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div class="lg:col-span-2 bg-white rounded-lg shadow">
                     <div class="p-4 border-b border-gray-200">
@@ -100,19 +100,28 @@
                     </div>
                     <div id="transactionList"></div>
                 </div>
-
                 <div class="bg-white rounded-lg shadow">
                     <div class="p-4 border-b border-gray-200">
                         <h2 class="text-xl font-semibold">Details</h2>
                     </div>
-                    <div id="detailsPanel" class="p-8 text-center text-gray-500">
-                        Select a transaction
-                    </div>
+                    <div id="detailsPanel" class="p-8 text-center text-gray-500">Select a transaction</div>
                 </div>
             </div>
         </div>
+
+        <!-- REPORT VIEW -->
+        <div id="reportView" style="display:none;">
+            <div class="flex gap-3 mb-6 flex-wrap">
+                <button onclick="printReport()" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">&#128424; Print</button>
+                <button onclick="emailReport()" class="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700">&#128231; Email to Director</button>
+                <button onclick="downloadReport()" class="bg-gray-600 text-white px-6 py-2 rounded-lg hover:bg-gray-700">&#128229; Download PDF</button>
+            </div>
+            <div id="reportContent" class="bg-white rounded-lg shadow p-8"></div>
+        </div>
+
     </div>
 
+    <!-- ADD MODAL -->
     <div id="addModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
         <div class="bg-white rounded-lg max-w-md w-full p-6 max-h-screen overflow-y-auto">
             <h2 class="text-2xl font-bold mb-4">New Transaction</h2>
@@ -144,27 +153,13 @@
                 </div>
             </div>
             <div class="flex gap-3 mt-6">
-                <button onclick="closeAddForm()" class="flex-1 px-4 py-2 border rounded-lg hover:bg-gray-50">
-                    Cancel
-                </button>
-                <button onclick="addTransaction()" class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
-                    Create
-                </button>
+                <button onclick="closeAddForm()" class="flex-1 px-4 py-2 border rounded-lg hover:bg-gray-50">Cancel</button>
+                <button onclick="addTransaction()" class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Create</button>
             </div>
-        </div>
-
-
-            <div id="reportView" style="display: none;">
-            <div class="flex gap-3 mb-6 flex-wrap">
-                <button onclick="printReport()" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">🖨️ Print</button>
-                <button onclick="emailReport()" class="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700">📧 Email to Director</button>
-                <button onclick="downloadReport()" class="bg-gray-600 text-white px-6 py-2 rounded-lg hover:bg-gray-700">📥 Download PDF</button>
-            </div>
-            <div id="reportContent" class="bg-white rounded-lg shadow p-8"></div>
         </div>
     </div>
 
-    <!-- Edit Modal -->
+    <!-- EDIT MODAL -->
     <div id="editModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
         <div class="bg-white rounded-lg max-w-md w-full p-6 max-h-screen overflow-y-auto">
             <h2 class="text-2xl font-bold mb-1">Edit Transaction</h2>
@@ -202,13 +197,13 @@
         </div>
     </div>
 
-    <!-- Delete Modal -->
+    <!-- DELETE MODAL -->
     <div id="deleteModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
         <div class="bg-white rounded-lg max-w-md w-full p-6">
             <h2 class="text-2xl font-bold text-red-600 mb-1">Delete Transaction</h2>
             <p id="deleteRefLabel" class="text-sm text-gray-500 mb-4"></p>
             <div class="bg-red-50 border border-red-200 rounded-lg p-3 mb-4 text-sm text-red-700">
-                ⚠️ This action is permanent and cannot be undone.
+                &#9888;&#65039; This action is permanent and cannot be undone.
             </div>
             <div class="space-y-4">
                 <div>
@@ -229,6 +224,7 @@
     </div>
 
     <script>
+
         const ADMIN_PIN = '1234';
         const STAGES = {
             PREPARED: 'Request Prepared',
@@ -858,6 +854,7 @@
         init();
         // Auto-refresh every 30 seconds so all users see live data
         setInterval(loadTransactions, 30000);
+    
     </script>
 </body>
 </html>
