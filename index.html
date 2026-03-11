@@ -859,15 +859,10 @@ Records Officer, RFRO XIII`
             renderReport();
             const content = document.getElementById('printableReport').innerHTML;
             const win = window.open('', '_blank');
-            win.document.write(`
-                <html><head><title>Daily Report - RFRO XIII</title>
-                <style>
-                    body { font-family: Arial, sans-serif; margin: 20px; }
-                    @media print { body { margin: 0; } }
-                </style>
-                </head><body>${content}<script>window.onload=function(){window.print();}<\/script></body></html>
-            `);
+            const html = '<html><head><title>Daily Report - RFRO XIII</title><style>body{font-family:Arial,sans-serif;margin:20px;}@media print{body{margin:0;}}</style></head><body>' + content + '</body></html>';
+            win.document.write(html);
             win.document.close();
+            setTimeout(() => win.print(), 500);
         }
 
         function updateClock() {
