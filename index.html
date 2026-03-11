@@ -35,15 +35,6 @@
             </div>
         </div>
 
-        <div id="reportView" style="display: none;">
-            <div class="flex gap-3 mb-6 flex-wrap">
-                <button onclick="printReport()" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">🖨️ Print</button>
-                <button onclick="emailReport()" class="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700">📧 Email to Director</button>
-                <button onclick="downloadReport()" class="bg-gray-600 text-white px-6 py-2 rounded-lg hover:bg-gray-700">📥 Download PDF</button>
-            </div>
-            <div id="reportContent" class="bg-white rounded-lg shadow p-8"></div>
-        </div>
-
         <div id="dashboardView">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
                 <div class="bg-blue-50 border-l-4 border-blue-500 p-6 rounded-lg shadow">
@@ -160,6 +151,15 @@
                     Create
                 </button>
             </div>
+        </div>
+
+        <div id="reportView" style="display: none;">
+            <div class="flex gap-3 mb-6 flex-wrap">
+                <button onclick="printReport()" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">🖨️ Print</button>
+                <button onclick="emailReport()" class="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700">📧 Email to Director</button>
+                <button onclick="downloadReport()" class="bg-gray-600 text-white px-6 py-2 rounded-lg hover:bg-gray-700">📥 Download PDF</button>
+            </div>
+            <div id="reportContent" class="bg-white rounded-lg shadow p-8"></div>
         </div>
     </div>
 
@@ -811,48 +811,29 @@
             const rejected = transactions.filter(t => t.stage === STAGES.NOT_ACCEPTED).length;
             const pending = total - completed - rejected;
 
-            const subject = encodeURIComponent(`Daily Transaction Report - RFRO XIII - ${dateStr}`);
-            const body = encodeURIComponent(
-                `Good day,
+            let stageText = '';
+            Object.values(STAGES).forEach(function(stage) {
+                const list = transactions.filter(function(t) { return t.stage === stage; });
+                if (!list.length) return;
+                stageText += '\n[' + stage + '] (' + list.length + ')\n';
+                list.forEach(function(t) {
+                    stageText += '  - ' + t.referenceNumber + ' | ' + t.applicantName + (t.entityName ? ' / ' + t.entityName : '') + ' | ' + t.requestType + '\n';
+                });
+            });
 
-Please find below the daily transaction status report as of ${dateStr}.
+            const bodyText = 'Good day,\n\nPlease find below the daily transaction status report as of ' + dateStr + '.\n\n'
+                + 'SUMMARY\n-------\n'
+                + 'Total Transactions : ' + total + '\n'
+                + 'In Progress        : ' + pending + '\n'
+                + 'Completed          : ' + completed + '\n'
+                + 'Not Accepted       : ' + rejected + '\n\n'
+                + 'TRANSACTIONS BY STAGE\n---------------------\n'
+                + stageText
+                + '\n\nThis is a system-generated report from the RFRO XIII Transaction Monitoring System.\n\nRespectfully,\nRecords Officer, RFRO XIII';
 
-` +
-                `SUMMARY
-` +
-                `-------
-` +
-                `Total Transactions : ${total}
-` +
-                `In Progress        : ${pending}
-` +
-                `Completed          : ${completed}
-` +
-                `Not Accepted       : ${rejected}
-
-` +
-                `TRANSACTIONS BY STAGE
-` +
-                `---------------------
-` +
-                Object.values(STAGES).map(stage => {
-                    const list = transactions.filter(t => t.stage === stage);
-                    if (!list.length) return '';
-                    return `
-[${stage}] (${list.length})
-` +
-                        list.map(t => `  - ${t.referenceNumber} | ${t.applicantName}${t.entityName ? ' / ' + t.entityName : ''} | ${t.requestType}`).join('
-');
-                }).filter(Boolean).join('
-') +
-                `
-
-This is a system-generated report from the RFRO XIII Transaction Monitoring System.
-
-Respectfully,
-Records Officer, RFRO XIII`
-            );
-            window.location.href = `mailto:?subject=${subject}&body=${body}`;
+            const subject = encodeURIComponent('Daily Transaction Report - RFRO XIII - ' + dateStr);
+            const body = encodeURIComponent(bodyText);
+            window.location.href = 'mailto:?subject=' + subject + '&body=' + body;
         }
 
         function downloadReport() {
